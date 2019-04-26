@@ -17,16 +17,22 @@ class Board extends React.Component {
     super(props);
     this.state = {
       squares: Array(9).fill(null),
-      xIsNext: true
+      xIsNext: true,
+      winner: null
     }
   }
 
   handleClick = (i) => {
-    const squares = this.state.squares.slice();   //для создания копии массива, вместо изменения существующего массива
-    squares[i] = this.state.xIsNext ? 'X' : '0';    
+    const squares = this.state.squares.slice();   //для создания копии массива, вместо изменения существующего массива    
+    if (this.state.winner || squares[i]) {
+      return;
+    }
+    
+    squares[i] = this.state.xIsNext ? 'X' : '0';
     this.setState({
       squares: squares,
-      xIsNext: !this.state.xIsNext
+      xIsNext: !this.state.xIsNext,
+      winner: this.calculateWinner(squares)
     })
   }
 
@@ -39,9 +45,35 @@ class Board extends React.Component {
     )
   }
 
-  render() {
-    const status = `Следующий ход: ${this.state.xIsNext ? 'X' : '0'}`;
+  calculateWinner(squares) {
+    const lines = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+    
+    return lines.reduce((acc, item) => {
+      const [a, b, c] = item;
+      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+        return squares[a];
+      }
+      return acc;
+    }, null)
+  }
 
+  render() {
+    let status = '';
+    if (this.state.winner) {
+      status = `Выиграл ${this.state.winner}`;
+    } else {
+      status = `Следующий ход: ${this.state.xIsNext ? 'X' : '0'}`;
+    }
+    
     return(
       <div>
         <div className="status">{status}</div>
