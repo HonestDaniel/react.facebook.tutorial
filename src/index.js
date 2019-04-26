@@ -80,6 +80,7 @@ class Game extends React.Component {
   handleClick(i) {
     const squares = this.state.history.slice();   //для создания копии массива, вместо изменения существующего массива    
     if (this.state.winner || squares[i]) {
+      //игра окончена или клетка уже занята
       return;
     }
     
