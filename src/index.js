@@ -47,6 +47,9 @@ class Board extends React.Component {
 
 // Game
 class Game extends React.Component {
+  ITEM_CROSS = 'X';
+  ITEM_ZERO = '0';
+
   constructor(props) {
     super(props);
     this.state = {
@@ -84,7 +87,7 @@ class Game extends React.Component {
       return;
     }
     
-    squares[i] = this.state.xIsNext ? 'X' : '0';
+    squares[i] = this.state.xIsNext ? this.ITEM_CROSS : this.ITEM_ZERO;
     this.setState({
       history: squares,
       xIsNext: !this.state.xIsNext,
@@ -93,7 +96,7 @@ class Game extends React.Component {
   }
 
   render() {
-    let status = `Следующий ход: ${this.state.xIsNext ? 'X' : '0'}`;
+    let status = `Следующий ход: ${this.state.xIsNext ? this.ITEM_CROSS : this.ITEM_ZERO}`;
     if (this.props.winner) {
       status = `Выиграл ${this.state.winner}`;
     }
