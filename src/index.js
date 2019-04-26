@@ -16,15 +16,17 @@ class Board extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      squares: Array(9).fill(null)
+      squares: Array(9).fill(null),
+      xIsNext: true
     }
   }
 
   handleClick = (i) => {
     const squares = this.state.squares.slice();   //для создания копии массива, вместо изменения существующего массива
-    squares[i] = 'x';
+    squares[i] = this.state.xIsNext ? 'X' : '0';    
     this.setState({
-      squares: squares
+      squares: squares,
+      xIsNext: !this.state.xIsNext
     })
   }
 
@@ -38,7 +40,7 @@ class Board extends React.Component {
   }
 
   render() {
-    const status = 'Next player: X';
+    const status = `Следующий ход: ${this.state.xIsNext ? 'X' : '0'}`;
 
     return(
       <div>
