@@ -23,16 +23,8 @@ class Board extends React.Component {
   }
 
   render() {
-    let status = '';
-    if (this.props.winner) {
-      status = `Выиграл ${this.props.winner}`;
-    } else {
-      status = `Следующий ход: ${this.props.xIsNext ? 'X' : '0'}`;
-    }
-    
     return(
       <div>
-        <div className="status">{status}</div>
         <div className="board-row">
           {this.renderSquare(0)}
           {this.renderSquare(1)}
@@ -73,7 +65,7 @@ class Game extends React.Component {
       [1, 4, 7],
       [2, 5, 8],
       [0, 4, 8],
-      [2, 4, 6],
+      [2, 4, 6]
     ];
     
     return lines.reduce((acc, item) => {
@@ -85,7 +77,7 @@ class Game extends React.Component {
     }, null)
   }
 
-  onHandleClick = (i) => {
+  handleClick(i) {
     const squares = this.state.history.slice();   //для создания копии массива, вместо изменения существующего массива    
     if (this.state.winner || squares[i]) {
       return;
@@ -100,18 +92,21 @@ class Game extends React.Component {
   }
 
   render() {
+    let status = `Следующий ход: ${this.state.xIsNext ? 'X' : '0'}`;
+    if (this.props.winner) {
+      status = `Выиграл ${this.state.winner}`;
+    }
+
     return(
       <div className="game">
         <div className="game-board">
           <Board 
             squares={this.state.history}
-            onClick={(i) => this.onHandleClick(i)}
-            winner={this.state.winner}
-            xIsNext={this.state.xIsNext}
+            onClick={(i) => this.handleClick(i)}
           />
         </div>
         <div className="game-info">
-          <div>{/* status */}</div>          
+          <div>{status}</div>
         </div>
       </div>
     )
