@@ -102,8 +102,12 @@ class Game extends React.Component {
   }
 
   historyMove = (index) => {
-    console.log(index)
-    console.log(this.state.history[index])
+    const stepHistory = this.state.history.slice(0, index + 1);
+    this.setState({
+      squares: stepHistory[stepHistory.length - 1].squares,
+      history: stepHistory,
+      xIsNext: index % 2 === 0
+    })
   }
 
   render() {
