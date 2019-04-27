@@ -53,7 +53,10 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      history: Array(9).fill(null),
+      history: [{
+        squares: Array(9).fill(null)
+      }],
+      squares: Array(9).fill(null),
       xIsNext: true,
       winner: null
     }
@@ -81,7 +84,7 @@ class Game extends React.Component {
   }
 
   handleClick(i) {
-    const squares = this.state.history.slice();   //для создания копии массива, вместо изменения существующего массива    
+    const squares = this.state.squares.slice();   //для создания копии массива, вместо изменения существующего массива    
     if (this.state.winner || squares[i]) {
       //игра окончена или клетка уже занята
       return;
@@ -89,28 +92,46 @@ class Game extends React.Component {
     
     squares[i] = this.state.xIsNext ? this.ITEM_CROSS : this.ITEM_ZERO;
     this.setState({
-      history: squares,
+      squares: squares,
+      history: this.state.history.concat({
+        squares: squares
+      }),
       xIsNext: !this.state.xIsNext,
       winner: this.calculateWinner(squares)
     })
   }
 
+  historyMove = (index) => {
+    console.log(index)
+    console.log(this.state.history[index])
+  }
+
   render() {
     let status = `Следующий ход: ${this.state.xIsNext ? this.ITEM_CROSS : this.ITEM_ZERO}`;
-    if (this.props.winner) {
+    if (this.state.winner) {
       status = `Выиграл ${this.state.winner}`;
     }
 
+    const historyItems = this.state.history.map((item, index) => {
+      const desc = index ? `Перейти к ходу # ${index}` : `К началу игры`;
+      return (
+        <li key={index}>
+          <button onClick={() => this.historyMove(index)}>{desc}</button>
+        </li>
+      )
+    })
+    
     return(
       <div className="game">
         <div className="game-board">
           <Board 
-            squares={this.state.history}
+            squares={this.state.squares}
             onClick={(i) => this.handleClick(i)}
           />
         </div>
         <div className="game-info">
           <div>{status}</div>
+          <ol>{historyItems}</ol>
         </div>
       </div>
     )
