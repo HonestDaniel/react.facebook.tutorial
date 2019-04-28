@@ -49,6 +49,7 @@ class Board extends React.Component {
 class Game extends React.Component {
   ITEM_CROSS = 'X';
   ITEM_ZERO = '0';
+  NOT_WINNER = 'ничия';
 
   constructor(props) {
     super(props);
@@ -70,17 +71,23 @@ class Game extends React.Component {
       [0, 3, 6],
       [1, 4, 7],
       [2, 5, 8],
-      [0, 4, 8],
+      [0, 4, 8], 
       [2, 4, 6]
     ];
     
-    return lines.reduce((acc, item) => {
+    const win = lines.reduce((acc, item, index, arr) => {
       const [a, b, c] = item;
       if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
         return squares[a];
       }
       return acc;
     }, null)
+
+    if (win) {
+      return win
+    } else if (squares.every((item) => item)) { // все поля заполнены
+      return this.NOT_WINNER
+    }
   }
 
   handleClick(i) {
@@ -103,16 +110,21 @@ class Game extends React.Component {
 
   historyMove = (index) => {
     const stepHistory = this.state.history.slice(0, index + 1);
+    const squares = stepHistory[stepHistory.length - 1].squares;
+
     this.setState({
-      squares: stepHistory[stepHistory.length - 1].squares,
+      squares: squares,
       history: stepHistory,
-      xIsNext: index % 2 === 0
+      xIsNext: index % 2 === 0,
+      winner: this.calculateWinner(squares)
     })
   }
 
   render() {
     let status = `Следующий ход: ${this.state.xIsNext ? this.ITEM_CROSS : this.ITEM_ZERO}`;
-    if (this.state.winner) {
+    if (this.state.winner === this.NOT_WINNER) {
+      status = 'Ничья'
+    } else if (this.state.winner) {
       status = `Выиграл ${this.state.winner}`;
     }
 
